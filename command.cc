@@ -13,13 +13,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
-//#include <sys/wait.h>
+#include <sys/wait.h>
 #include <string.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <time.h>
-// #include <glob.h>
-// #include <wordexp.h>
+#include <glob.h>
+#include <wordexp.h>
 #include <vector>
 #include <string>
 #include <cctype>
@@ -180,7 +180,7 @@ void Command::clear()
         }
 
         free(_simpleCommands[i]->_arguments);
-        free(_simpleCommands[i]);
+        delete _simpleCommands[i];
     }
 
     if (_outFile)
@@ -236,9 +236,35 @@ void Command::print()
 void Command::execute()
 {
     print();
-    /*
-        Write your code here
-    */
+
+    if (_numberOfSimpleCommands == 0)
+    {
+        clear();
+        return;
+    }
+
+    pid_t pid = fork();
+
+    if (pid == 0)
+    {
+        execvp(
+            _simpleCommands[0]->_arguments[0],
+            _simpleCommands[0]->_arguments
+        );
+
+        perror("execvp");
+        exit(1);
+    }
+
+    else if (pid > 0)
+    {
+        waitpid(pid, NULL, 0);
+    }
+
+    else
+    {
+        perror("fork");
+    }
 
     clear();
 }
@@ -246,8 +272,6 @@ void Command::execute()
 void Command::prompt()
 {
     std::string input;
-    
-    
     
     
     while (true)
