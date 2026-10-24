@@ -250,7 +250,7 @@ void Command::prompt()
     
     
     
-    while (true)git rev-parse --show-toplevel
+    while (true)
     {
         printf("myshell>");
         fflush(stdout);
