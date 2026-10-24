@@ -1,0 +1,56 @@
+
+test commands
+
+
+ls
+ls -al
+pwd
+echo hello
+abcdef
+
+ls > out.txt
+cat out.txt
+
+echo first > out.txt
+echo second >> out.txt
+cat out.txt
+
+cat < out.txt
+
+ls fakefile 2> error.txt
+cat error.txt
+
+ls fakefile >>& all.txt
+cat all.txt
+
+ls | grep txt
+ls | grep txt | grep out
+
+ls | grep txt > result.txt
+cat result.txt
+
+cat < out.txt | grep second
+
+sleep 5 &
+sleep 5
+
+pwd
+cd ..
+pwd
+
+cd
+pwd
+
+cd fakefolder
+
+sleep 100
+
+| ls
+ls |
+ls | | grep txt
+ls >
+cat <
+ls 2>
+sleep & 5
+
+exit
