@@ -248,11 +248,10 @@ void Command::prompt()
     std::string input;
     
     
-    
-    
     while (true)git rev-parse --show-toplevel
     {
-        
+        printf("myshell>");
+        fflush(stdout);
        
         std::getline(std::cin, input); 
         std::vector<Token> tokens = tokenize(input);
