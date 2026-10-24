@@ -1,38 +1,137 @@
+# =========================
+# 1. BUILD
+# =========================
 
-test commands
+make clean
+make
+./myshell
 
+
+# =========================
+# 2. BASIC COMMANDS
+# =========================
 
 ls
 ls -al
 pwd
 echo hello
+echo hello world
+whoami
+date
+
+
+# =========================
+# 3. INVALID COMMAND
+# =========================
+
 abcdef
 
-ls > out.txt
-cat out.txt
+
+# =========================
+# 4. OUTPUT REDIRECTION >
+# =========================
 
 echo first > out.txt
-echo second >> out.txt
 cat out.txt
 
-cat < out.txt
+ls > list.txt
+cat list.txt
 
-ls fakefile 2> error.txt
+
+# =========================
+# 5. APPEND REDIRECTION >>
+# =========================
+
+echo first > append.txt
+echo second >> append.txt
+echo third >> append.txt
+cat append.txt
+
+
+# =========================
+# 6. INPUT REDIRECTION <
+# =========================
+
+cat < append.txt
+
+grep second < append.txt
+
+
+# =========================
+# 7. ERROR REDIRECTION 2>
+# =========================
+
+ls file_that_does_not_exist 2> error.txt
 cat error.txt
 
-ls fakefile >>& all.txt
-cat all.txt
+
+# =========================
+# 8. OUTPUT + ERROR >>&
+# =========================
+
+ls file_that_does_not_exist >>& both.txt
+cat both.txt
+
+
+# =========================
+# 9. SIMPLE PIPE
+# =========================
 
 ls | grep txt
+
+echo hello | grep hello
+
+echo hello | grep xyz
+
+
+# =========================
+# 10. MULTIPLE PIPES
+# =========================
+
 ls | grep txt | grep out
+
+cat append.txt | grep second | wc -l
+
+
+# =========================
+# 11. PIPE + OUTPUT REDIRECTION
+# =========================
 
 ls | grep txt > result.txt
 cat result.txt
 
-cat < out.txt | grep second
+
+# =========================
+# 12. INPUT + PIPE
+# =========================
+
+cat < append.txt | grep second
+
+cat < append.txt | grep second | wc -l
+
+
+# =========================
+# 13. BACKGROUND COMMAND
+# =========================
 
 sleep 5 &
-sleep 5
+
+# prompt should return immediately
+# after around 5 seconds, SIGCHLD message should appear
+
+
+# =========================
+# 14. FOREGROUND COMMAND
+# =========================
+
+sleep 3
+
+# shell should wait about 3 seconds
+
+
+# =========================
+# 15. CD
+# =========================
 
 pwd
 cd ..
@@ -41,16 +140,137 @@ pwd
 cd
 pwd
 
-cd fakefolder
+cd fake_directory
+
+
+# =========================
+# 16. WILDCARD BONUS *
+# =========================
+
+ls *.cc
+ls *.h
+ls *.txt
+ls command.*
+echo *.txt
+
+
+# =========================
+# 17. WILDCARD BONUS ?
+# =========================
+
+touch a1.txt
+touch a2.txt
+touch ab.txt
+touch abc.txt
+
+ls a?.txt
+
+# should match:
+# a1.txt
+# a2.txt
+# ab.txt
+#
+# should NOT match:
+# abc.txt
+
+
+# =========================
+# 18. MORE WILDCARD TESTS
+# =========================
+
+touch test1.cc
+touch test2.cc
+touch testA.cc
+touch test12.cc
+
+ls test?.cc
+
+# should match:
+# test1.cc
+# test2.cc
+# testA.cc
+#
+# should NOT match:
+# test12.cc
+
+
+ls test*.cc
+
+
+# =========================
+# 19. WILDCARD + PIPE
+# =========================
+
+ls *.txt | grep out
+
+
+# =========================
+# 20. WILDCARD + REDIRECTION
+# =========================
+
+echo *.txt > wildcard.txt
+cat wildcard.txt
+
+
+# =========================
+# 21. INVALID PIPE CASES
+# =========================
+
+| ls
+
+ls |
+
+ls | | grep txt
+
+
+# =========================
+# 22. INVALID REDIRECTION CASES
+# =========================
+
+ls >
+
+cat <
+
+ls 2>
+
+echo hello >>
+
+
+# =========================
+# 23. INVALID BACKGROUND CASE
+# =========================
+
+sleep & 5
+
+
+# =========================
+# 24. CTRL+C TEST
+# =========================
 
 sleep 100
 
-| ls
-ls |
-ls | | grep txt
-ls >
-cat <
-ls 2>
-sleep & 5
+# while sleep is running:
+# press Ctrl+C
+#
+# expected:
+# sleep stops
+# myshell stays running
+
+
+# =========================
+# 25. CTRL+D TEST
+# =========================
+
+# at an empty:
+# myshell>
+#
+# press Ctrl+D
+#
+# shell should exit cleanly
+
+
+# =========================
+# 26. EXIT BUILTIN
+# =========================
 
 exit
