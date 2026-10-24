@@ -13,13 +13,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <sys/wait.h>
+//#include <sys/wait.h>
 #include <string.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <time.h>
-#include <glob.h>
-#include <wordexp.h>
+// #include <glob.h>
+// #include <wordexp.h>
 #include <vector>
 #include <string>
 #include <cctype>
@@ -248,11 +248,14 @@ void Command::prompt()
     std::string input;
     
     
+    
+    
     while (true)git rev-parse --show-toplevel
     {
         printf("myshell>");
         fflush(stdout);
        
+        
         std::getline(std::cin, input); 
         std::vector<Token> tokens = tokenize(input);
         parse(tokens);
