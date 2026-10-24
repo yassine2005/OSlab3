@@ -34,15 +34,91 @@ void parse(std::vector<Token> &tokens)
     Command currentCommand;
     SimpleCommand *currentSimpleCommand = new SimpleCommand();
 
+    for (int i = 0; i < tokens.size(); i++)
+    {
+        if (tokens[i].type == TOKEN_COMMAND ||
+            tokens[i].type == TOKEN_ARGUMENT)
+        {
+            currentSimpleCommand->insertArgument(
+                strdup(tokens[i].value.c_str())
+            );
+        }
+
+        else if (tokens[i].type == TOKEN_PIPE)
+        {
+            currentCommand.insertSimpleCommand(currentSimpleCommand);
+
+            currentSimpleCommand = new SimpleCommand();
+        }
+
+        else if (tokens[i].type == TOKEN_REDIRECT)
+        {
+            currentCommand._outFile =
+                strdup(tokens[i + 1].value.c_str());
+
+            i++;
+        }
+
+        else if (tokens[i].type == TOKEN_APPEND)
+        {
+            currentCommand._outFile =
+                strdup(tokens[i + 1].value.c_str());
+
+            currentCommand._append = 1;
+
+            i++;
+        }
+
+        else if (tokens[i].type == TOKEN_INPUT)
+        {
+            currentCommand._inputFile =
+                strdup(tokens[i + 1].value.c_str());
+
+            i++;
+        }
+
+        else if (tokens[i].type == TOKEN_ERROR)
+        {
+            currentCommand._errFile =
+                strdup(tokens[i + 1].value.c_str());
+
+            i++;
+        }
+
+        else if (tokens[i].type == TOKEN_REDIRECT_AND_ERROR)
+        {
+            currentCommand._outFile =
+                strdup(tokens[i + 1].value.c_str());
+
+            currentCommand._errFile =
+                strdup(tokens[i + 1].value.c_str());
+
+            currentCommand._out_error = 1;
+            currentCommand._append = 1;
+
+            i++;
+        }
+
+        else if (tokens[i].type == TOKEN_BACKGROUND)
+        {
+            currentCommand._background = 1;
+        }
+
+        else if (tokens[i].type == TOKEN_EOF)
+        {
+            if (currentSimpleCommand->_numberOfArguments > 0)
+            {
+                currentCommand.insertSimpleCommand(
+                    currentSimpleCommand
+                );
+            }
+
+            break;
+        }
+    }
+
     currentCommand.execute();
-    /*
-      Implement this function 
-      you must parse for all possible tokens scenario
-      right now command.execute only print the format , you will inject it in your logic.
-
-    */
 }
-
 SimpleCommand::SimpleCommand()
 {
     _numberOfAvailableArguments = 5;
@@ -68,14 +144,17 @@ void SimpleCommand::insertArgument(char *argument)
 Command::Command()
 {
     _numberOfAvailableSimpleCommands = 1;
-    _simpleCommands = (SimpleCommand **)
-        malloc(_numberOfSimpleCommands * sizeof(SimpleCommand *));
-
     _numberOfSimpleCommands = 0;
+
+    _simpleCommands = (SimpleCommand **)
+        malloc(_numberOfAvailableSimpleCommands * sizeof(SimpleCommand *));
+
     _outFile = 0;
     _inputFile = 0;
     _errFile = 0;
     _background = 0;
+    _out_error = 0;
+    _append = 0;
 }
 
 void Command::insertSimpleCommand(SimpleCommand *simpleCommand)
@@ -124,6 +203,8 @@ void Command::clear()
     _inputFile = 0;
     _errFile = 0;
     _background = 0;
+    _out_error = 0;
+    _append = 0;
 }
 
 void Command::print()
@@ -160,16 +241,19 @@ void Command::execute()
     */
 
     clear();
-    prompt();
 }
 
 void Command::prompt()
 {
-    printf("myshell>");
-    fflush(stdout);
     std::string input;
-    while (true)
+    
+    
+    
+    
+    while (true)git rev-parse --show-toplevel
     {
+        
+       
         std::getline(std::cin, input); 
         std::vector<Token> tokens = tokenize(input);
         parse(tokens);
