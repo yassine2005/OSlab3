@@ -4,4 +4,4 @@
 ## ./myshell should run your application 
 
 myshell: command.cc tokenizer.cc
-g++ command.cc tokenizer.cc -o myshell
+	g++ command.cc tokenizer.cc -o myshell
