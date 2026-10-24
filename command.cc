@@ -36,12 +36,54 @@ void parse(std::vector<Token> &tokens)
 
     for (int i = 0; i < tokens.size(); i++)
     {
-        if (tokens[i].type == TOKEN_COMMAND ||
-            tokens[i].type == TOKEN_ARGUMENT)
+        if (tokens[i].type == TOKEN_COMMAND)
         {
             currentSimpleCommand->insertArgument(
                 strdup(tokens[i].value.c_str())
             );
+        }
+
+        else if (tokens[i].type == TOKEN_ARGUMENT)
+        {
+            bool hasWildcard =
+                tokens[i].value.find('*') != std::string::npos ||
+                tokens[i].value.find('?') != std::string::npos;
+
+            if (hasWildcard)
+            {
+                glob_t results = {};
+
+                int result = glob(
+                    tokens[i].value.c_str(),
+                    GLOB_NOCHECK,
+                    NULL,
+                    &results
+                );
+
+                if (result == 0)
+                {
+                    for (size_t j = 0; j < results.gl_pathc; j++)
+                    {
+                        currentSimpleCommand->insertArgument(
+                            strdup(results.gl_pathv[j])
+                        );
+                    }
+
+                    globfree(&results);
+                }
+                else
+                {
+                    currentSimpleCommand->insertArgument(
+                        strdup(tokens[i].value.c_str())
+                    );
+                }
+            }
+            else
+            {
+                currentSimpleCommand->insertArgument(
+                    strdup(tokens[i].value.c_str())
+                );
+            }
         }
 
         else if (tokens[i].type == TOKEN_PIPE)
